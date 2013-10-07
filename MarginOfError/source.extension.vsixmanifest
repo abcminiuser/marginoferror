@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="d2d447c3-c682-4954-b6ae-899463dd1a63">
+    <Name>MarginOfError</Name>
+    <Author>FourWalledCubicle</Author>
+    <Version>1.0</Version>
+    <Description xml:space="preserve">Show icons indicating lines with errors/warnings.</Description>
+    <Locale>1033</Locale>
+    <InstalledByMsi>false</InstalledByMsi>
+    <SupportedProducts>
+      <IsolatedShell Version="6.1">AtmelStudio</IsolatedShell>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+  </Identifier>
+  <References />
+  <Content>
+    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
+    <MefComponent>|%CurrentProject%|</MefComponent>
+  </Content>
+</Vsix>
