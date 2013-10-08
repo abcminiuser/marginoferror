@@ -120,6 +120,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\ErrorGlyphMouseProcessor.cs" />
+    <Compile Include="src\ErrorGlyphMouseProcessorProvider.cs" />
     <Compile Include="src\ErrorGlyphTag.cs" />
     <Compile Include="src\ErrorTagger.cs" />
     <Compile Include="src\ErrorTaggerProvider.cs" />

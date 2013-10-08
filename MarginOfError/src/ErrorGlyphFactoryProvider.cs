@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Utilities;
 namespace FourWalledCubicle.MarginOfError
 {
     [Export(typeof(IGlyphFactoryProvider))]
-    [Name("MarginOfErrorGlyph")]
+    [Name("MarginOfErrorGlyphFactoryProvder")]
     [ContentType("code")]
     [TagType(typeof(ErrorGlyphTag))]
     public sealed class ErrorGlyphFactoryProvider : IGlyphFactoryProvider

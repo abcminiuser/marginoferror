@@ -40,7 +40,7 @@ namespace FourWalledCubicle.MarginOfError
             Image glyphIcon = new System.Windows.Controls.Image();
             glyphIcon.Width = 16;
             glyphIcon.Height = 16;
-            glyphIcon.Source = glyphImage; 
+            glyphIcon.Source = glyphImage;
             return glyphIcon;
         }
     }
