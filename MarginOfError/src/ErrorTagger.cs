@@ -41,7 +41,7 @@ namespace FourWalledCubicle.MarginOfError
                     if (e.FileName.Equals(textDocument.FilePath))
                     {
                         ITextSnapshotLine line = mBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
-                        mErrors.Add(new Tuple<SnapshotSpan, ErrorItem>(new SnapshotSpan(line.Start, line.Length), e));
+                        mErrors.Add(new Tuple<SnapshotSpan, ErrorItem>(new SnapshotSpan(mBuffer.CurrentSnapshot, line.Start, line.Length), e));
                     }
                 }
             }
@@ -55,8 +55,16 @@ namespace FourWalledCubicle.MarginOfError
         {
             foreach (Tuple<SnapshotSpan, ErrorItem> errorEntry in mErrors)
             {
-                if (spans.IntersectsWith(new NormalizedSnapshotSpanCollection(errorEntry.Item1)))
-                    yield return new TagSpan<ErrorGlyphTag>(errorEntry.Item1, new ErrorGlyphTag(errorEntry.Item2.Description, errorEntry.Item2.ErrorLevel));
+                TagSpan<ErrorGlyphTag> tagSpan = null;
+                
+                try
+                {
+                    tagSpan = new TagSpan<ErrorGlyphTag>(errorEntry.Item1, new ErrorGlyphTag(errorEntry.Item2.Description, errorEntry.Item2.ErrorLevel));
+                }
+                catch { }
+
+                if (tagSpan != null)
+                    yield return tagSpan;
             }
         }
 
