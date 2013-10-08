@@ -54,7 +54,10 @@ namespace FourWalledCubicle.MarginOfError
         IEnumerable<ITagSpan<ErrorGlyphTag>> ITagger<ErrorGlyphTag>.GetTags(NormalizedSnapshotSpanCollection spans)
         {
             foreach (Tuple<SnapshotSpan, ErrorItem> errorEntry in mErrors)
-                yield return new TagSpan<ErrorGlyphTag>(errorEntry.Item1, new ErrorGlyphTag(errorEntry.Item2.Description, errorEntry.Item2.ErrorLevel));
+            {
+                if (spans.IntersectsWith(new NormalizedSnapshotSpanCollection(errorEntry.Item1)))
+                    yield return new TagSpan<ErrorGlyphTag>(errorEntry.Item1, new ErrorGlyphTag(errorEntry.Item2.Description, errorEntry.Item2.ErrorLevel));
+            }
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;

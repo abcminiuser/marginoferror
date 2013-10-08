@@ -13,6 +13,8 @@ namespace FourWalledCubicle.MarginOfError
         private IWpfTextViewMargin mTextViewMargin;
         private ITagAggregator<ErrorGlyphTag> mTagAggregator;
 
+        private bool isToolTipOwner = false;
+
         public ErrorGlyphMouseProcessor(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin, ITagAggregator<ErrorGlyphTag> tagAggregator)
         {
             mTextViewHost = wpfTextViewHost;
@@ -28,9 +30,23 @@ namespace FourWalledCubicle.MarginOfError
             mousePosition.Offset(view.ViewportLeft, view.ViewportTop);
 
             ITextViewLine line = view.TextViewLines.GetTextViewLineContainingYCoordinate(mousePosition.Y);
+            if (line != null)
+            {
+                foreach (IMappingTagSpan<ErrorGlyphTag> eSpan in mTagAggregator.GetTags(new SnapshotSpan(line.Start, line.End)))
+                {
+                    mTextViewMargin.VisualElement.ToolTip = eSpan.Tag.Description;
+                    isToolTipOwner = true;
+                }
+            }
+        }
 
-            foreach (IMappingTagSpan<ErrorGlyphTag> eSpan in mTagAggregator.GetTags(new SnapshotSpan(line.Start, line.End)))
-                mTextViewMargin.VisualElement.ToolTip = eSpan.Tag.Description;
+        public override void PostprocessMouseLeave(MouseEventArgs e)
+        {
+            if (isToolTipOwner == true)
+            {
+                mTextViewMargin.VisualElement.ToolTip = null;
+                isToolTipOwner = false;
+            }
         }
     }
 }
