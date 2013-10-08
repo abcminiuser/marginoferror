@@ -1,11 +1,10 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using System.Windows.Shapes;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using EnvDTE80;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
-using System;
-using System.Windows.Media.Imaging;
 
 namespace FourWalledCubicle.MarginOfError
 {
@@ -24,23 +23,24 @@ namespace FourWalledCubicle.MarginOfError
 
             ErrorGlyphTag errorDetails = tag as ErrorGlyphTag;
 
-            Image glyphIcon = new System.Windows.Controls.Image();
-            glyphIcon.Width = 14;
-            glyphIcon.Height = 14;
-
+            BitmapImage glyphImage = null;
             switch (errorDetails.ErrorLevel)
             {
-                case EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelHigh:
-                    glyphIcon.Source = errorIcon;
+                case vsBuildErrorLevel.vsBuildErrorLevelHigh:
+                    glyphImage = errorIcon;
                     break;
-                case EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelMedium:
-                    glyphIcon.Source = warningIcon;
+                case vsBuildErrorLevel.vsBuildErrorLevelMedium:
+                    glyphImage = warningIcon;
                     break;
-                case EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelLow:
-                    glyphIcon.Source = infoIcon;
+                case vsBuildErrorLevel.vsBuildErrorLevelLow:
+                    glyphImage = infoIcon;
                     break;
             }
 
+            Image glyphIcon = new System.Windows.Controls.Image();
+            glyphIcon.Width = 16;
+            glyphIcon.Height = 16;
+            glyphIcon.Source = glyphImage; 
             return glyphIcon;
         }
     }
