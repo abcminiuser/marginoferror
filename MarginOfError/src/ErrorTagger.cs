@@ -9,12 +9,14 @@ namespace FourWalledCubicle.MarginOfError
 {
     internal sealed class ErrorTagger : ITagger<ErrorGlyphTag>
     {
-        private DTE mDTE = null;
-        private ITextBuffer mBuffer = null;
+        private readonly DTE mDTE = null;
+        private readonly ITextBuffer mBuffer = null;
         private readonly List<Tuple<SnapshotSpan, ErrorItem>> mErrors = new List<Tuple<SnapshotSpan, ErrorItem>>();
-        private BuildEvents mBuildEvents = null;
+        private readonly BuildEvents mBuildEvents = null;
 
-        internal ErrorTagger(DTE dte, ITextBuffer buffer)
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
+        public ErrorTagger(DTE dte, ITextBuffer buffer)
         {
             mDTE = dte;
             mBuffer = buffer;
@@ -67,7 +69,5 @@ namespace FourWalledCubicle.MarginOfError
                     yield return tagSpan;
             }
         }
-
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
     }
 }

@@ -1,17 +1,17 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using System.Windows;
 using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Text;
 
 namespace FourWalledCubicle.MarginOfError
 {
     internal sealed class ErrorGlyphMouseProcessor : MouseProcessorBase
     {
-        private IWpfTextViewHost mTextViewHost;
-        private IWpfTextViewMargin mTextViewMargin;
-        private ITagAggregator<ErrorGlyphTag> mTagAggregator;
+        private readonly IWpfTextViewHost mTextViewHost;
+        private readonly IWpfTextViewMargin mTextViewMargin;
+        private readonly ITagAggregator<ErrorGlyphTag> mTagAggregator;
 
         private bool isToolTipOwner = false;
 

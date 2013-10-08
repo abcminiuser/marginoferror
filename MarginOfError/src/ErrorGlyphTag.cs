@@ -1,6 +1,5 @@
-﻿using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
-using EnvDTE80;
+﻿using EnvDTE80;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace FourWalledCubicle.MarginOfError
 {
