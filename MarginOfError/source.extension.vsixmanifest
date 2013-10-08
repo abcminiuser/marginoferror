@@ -3,9 +3,12 @@
   <Identifier Id="d2d447c3-c682-4954-b6ae-899463dd1a63">
     <Name>MarginOfError</Name>
     <Author>FourWalledCubicle</Author>
-    <Version>1.0</Version>
+    <Version>0.1</Version>
     <Description xml:space="preserve">Show icons indicating lines with errors/warnings.</Description>
     <Locale>1033</Locale>
+    <License>License.txt</License>
+    <Icon>MarginOfError.png</Icon>
+    <MoreInfoUrl>http://www.fourwalledcubicle.com</MoreInfoUrl>
     <InstalledByMsi>false</InstalledByMsi>
     <SupportedProducts>
       <IsolatedShell Version="6.1">AtmelStudio</IsolatedShell>
