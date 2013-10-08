@@ -8,6 +8,7 @@
     <Locale>1033</Locale>
     <License>License.txt</License>
     <Icon>MarginOfError.png</Icon>
+    <PreviewImage>Preview.png</PreviewImage>
     <MoreInfoUrl>http://www.fourwalledcubicle.com</MoreInfoUrl>
     <InstalledByMsi>false</InstalledByMsi>
     <SupportedProducts>
