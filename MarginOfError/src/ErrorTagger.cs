@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Text.Classification;
-using EnvDTE80;
 
 namespace FourWalledCubicle.MarginOfError
 {
@@ -32,17 +31,21 @@ namespace FourWalledCubicle.MarginOfError
 
             ErrorItems errorList = (mDTE as EnvDTE80.DTE2).ToolWindows.ErrorList.ErrorItems;
 
-            ITextDocument textDocument = mBuffer.Properties[typeof(ITextDocument)] as ITextDocument;
-            for (int i = 1; i <= errorList.Count; i++)
+            try
             {
-                ErrorItem e = errorList.Item(i);
-
-                if (e.FileName.Equals(textDocument.FilePath))
+                ITextDocument textDocument = mBuffer.Properties[typeof(ITextDocument)] as ITextDocument;
+                for (int i = 1; i <= errorList.Count; i++)
                 {
-                    ITextSnapshotLine line = mBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
-                    mErrors.Add(new Tuple<SnapshotSpan, ErrorItem>(new SnapshotSpan(line.Start, line.Length), e));
+                    ErrorItem e = errorList.Item(i);
+
+                    if (e.FileName.Equals(textDocument.FilePath))
+                    {
+                        ITextSnapshotLine line = mBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
+                        mErrors.Add(new Tuple<SnapshotSpan, ErrorItem>(new SnapshotSpan(line.Start, line.Length), e));
+                    }
                 }
             }
+            catch { }
 
             if (TagsChanged != null)
                 TagsChanged(this, new SnapshotSpanEventArgs(new SnapshotSpan(mBuffer.CurrentSnapshot, new Span(0, mBuffer.CurrentSnapshot.Length))));

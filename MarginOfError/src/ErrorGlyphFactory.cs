@@ -1,13 +1,22 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Controls;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
+using System;
+using System.Windows.Media.Imaging;
 
 namespace FourWalledCubicle.MarginOfError
 {
     internal sealed class ErrorGlyphFactory : IGlyphFactory
     {
+        private const string packURIPrefix = @"pack://application:,,,/MarginOfError;component/";
+
+        private readonly BitmapImage errorIcon = new BitmapImage(new Uri(packURIPrefix + "Resources/ErrorIcon.png"));
+        private readonly BitmapImage warningIcon = new BitmapImage(new Uri(packURIPrefix + "Resources/WarningIcon.png"));
+        private readonly BitmapImage infoIcon = new BitmapImage(new Uri(packURIPrefix + "Resources/InfoIcon.png"));
+
         public UIElement GenerateGlyph(IWpfTextViewLine line, IGlyphTag tag)
         {
             if (tag == null || !(tag is ErrorGlyphTag))
@@ -15,29 +24,24 @@ namespace FourWalledCubicle.MarginOfError
 
             ErrorGlyphTag errorDetails = tag as ErrorGlyphTag;
 
-            Ellipse ellipse = new Ellipse();
+            Image glyphIcon = new System.Windows.Controls.Image();
+            glyphIcon.Width = 14;
+            glyphIcon.Height = 14;
 
             switch (errorDetails.ErrorLevel)
             {
                 case EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelHigh:
-                    ellipse.Stroke = Brushes.DarkRed;
-                    ellipse.Fill = Brushes.IndianRed;
+                    glyphIcon.Source = errorIcon;
                     break;
                 case EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelMedium:
-                    ellipse.Stroke = Brushes.DarkGoldenrod;
-                    ellipse.Fill = Brushes.LightGoldenrodYellow;
+                    glyphIcon.Source = warningIcon;
                     break;
                 case EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelLow:
-                    ellipse.Stroke = Brushes.DarkBlue;
-                    ellipse.Fill = Brushes.DarkGray;
+                    glyphIcon.Source = infoIcon;
                     break;
             }
 
-            ellipse.StrokeThickness = 2;
-            ellipse.Height = 12;
-            ellipse.Width = 12;
-
-            return ellipse;
+            return glyphIcon;
         }
     }
 }

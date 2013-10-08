@@ -163,6 +163,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\WarningIcon.png" />
+    <Resource Include="Resources\ErrorIcon.png" />
+    <Resource Include="Resources\InfoIcon.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <PropertyGroup>
