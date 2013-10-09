@@ -25,7 +25,7 @@ namespace FourWalledCubicle.MarginOfError
             mToolTipProvider = toolTipProvider;
         }
 
-        public override void PreprocessMouseMove(MouseEventArgs e)
+        public override void PostprocessMouseMove(MouseEventArgs e)
         {
             ITextView view = mTextViewHost.TextView;
 
@@ -55,7 +55,7 @@ namespace FourWalledCubicle.MarginOfError
             {
                 if (newTag != currentTag)
                 {
-                    mToolTipProvider.ShowToolTip(trackingSpan, newTag.Description, PopupStyles.None);
+                    mToolTipProvider.ShowToolTip(trackingSpan, newTag.Description);
                     currentTag = newTag;
                 }
             }
