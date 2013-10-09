@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Text.Adornments;
 
 namespace FourWalledCubicle.MarginOfError
 {
@@ -12,17 +13,19 @@ namespace FourWalledCubicle.MarginOfError
         private readonly IWpfTextViewHost mTextViewHost;
         private readonly IWpfTextViewMargin mTextViewMargin;
         private readonly ITagAggregator<ErrorGlyphTag> mTagAggregator;
+        private readonly IToolTipProvider mToolTipProvider;
 
-        private bool isToolTipOwner = false;
+        private ErrorGlyphTag currentTag = null;
 
-        public ErrorGlyphMouseProcessor(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin, ITagAggregator<ErrorGlyphTag> tagAggregator)
+        public ErrorGlyphMouseProcessor(IWpfTextViewHost textViewHost, IWpfTextViewMargin textViewMargin, ITagAggregator<ErrorGlyphTag> tagAggregator, IToolTipProvider toolTipProvider)
         {
-            mTextViewHost = wpfTextViewHost;
-            mTextViewMargin = margin;
+            mTextViewHost = textViewHost;
+            mTextViewMargin = textViewMargin;
             mTagAggregator = tagAggregator;
+            mToolTipProvider = toolTipProvider;
         }
 
-        public override void PostprocessMouseEnter(MouseEventArgs e)
+        public override void PreprocessMouseMove(MouseEventArgs e)
         {
             ITextView view = mTextViewHost.TextView;
 
@@ -32,20 +35,34 @@ namespace FourWalledCubicle.MarginOfError
             ITextViewLine line = view.TextViewLines.GetTextViewLineContainingYCoordinate(mousePosition.Y);
             if (line != null)
             {
+                ErrorGlyphTag newTag = null;
+
                 foreach (IMappingTagSpan<ErrorGlyphTag> eSpan in mTagAggregator.GetTags(new SnapshotSpan(line.Start, line.End)))
-                {
-                    mTextViewMargin.VisualElement.ToolTip = eSpan.Tag.Description;
-                    isToolTipOwner = true;
-                }
+                    newTag = eSpan.Tag;
+
+                SetTooltip(newTag, view.TextSnapshot.CreateTrackingSpan(line.Start, line.Length, SpanTrackingMode.EdgeExclusive));
             }
         }
 
         public override void PostprocessMouseLeave(MouseEventArgs e)
         {
-            if (isToolTipOwner == true)
+            SetTooltip(null, null);
+        }
+
+        private void SetTooltip(ErrorGlyphTag newTag, ITrackingSpan trackingSpan)
+        {
+            if (newTag != null)
             {
-                mTextViewMargin.VisualElement.ToolTip = null;
-                isToolTipOwner = false;
+                if (newTag != currentTag)
+                {
+                    mToolTipProvider.ShowToolTip(trackingSpan, newTag.Description, PopupStyles.None);
+                    currentTag = newTag;
+                }
+            }
+            else if (currentTag != null)
+            {
+                mToolTipProvider.ClearToolTip();
+                currentTag = null;
             }
         }
     }

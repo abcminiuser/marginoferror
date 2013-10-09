@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Text.Adornments;
 
 namespace FourWalledCubicle.MarginOfError
 {
@@ -13,10 +14,13 @@ namespace FourWalledCubicle.MarginOfError
         [Import]
         internal IBufferTagAggregatorFactoryService aggregatorService = null;
 
+        [Import]
+        internal IToolTipProviderFactory toolTipProviderFactory = null;
+
         public IMouseProcessor GetAssociatedMouseProcessor(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin)
         {
             ITagAggregator<ErrorGlyphTag> tagAggregator = aggregatorService.CreateTagAggregator<ErrorGlyphTag>(wpfTextViewHost.TextView.TextBuffer);
-            return new ErrorGlyphMouseProcessor(wpfTextViewHost, margin, tagAggregator);
+            return new ErrorGlyphMouseProcessor(wpfTextViewHost, margin, tagAggregator, toolTipProviderFactory.GetToolTipProvider(wpfTextViewHost.TextView));
         }
     }
 }
