@@ -7,11 +7,18 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 namespace FourWalledCubicle.MarginOfError
 {
+    internal sealed class ErrorTagInfo
+    {
+        public string Description { get; set; }
+        public vsBuildErrorLevel ErrorLevel { get; set; }
+        public SnapshotSpan SpanData { get; set; }
+    }
+
     internal sealed class ErrorTagger : ITagger<ErrorGlyphTag>
     {
         private readonly DTE mDTE = null;
         private readonly ITextBuffer mBuffer = null;
-        private readonly List<Tuple<SnapshotSpan, ErrorItem>> mErrors = new List<Tuple<SnapshotSpan, ErrorItem>>();
+        private readonly Dictionary<int, ErrorTagInfo> mErrors = new Dictionary<int, ErrorTagInfo>();
         private readonly BuildEvents mBuildEvents = null;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -43,25 +50,41 @@ namespace FourWalledCubicle.MarginOfError
                     if (e.FileName.Equals(textDocument.FilePath))
                     {
                         ITextSnapshotLine line = mBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
-                        mErrors.Add(new Tuple<SnapshotSpan, ErrorItem>(new SnapshotSpan(mBuffer.CurrentSnapshot, line.Start, line.Length), e));
+
+                        if (mErrors.ContainsKey(e.Line))
+                        {
+                            ErrorTagInfo errorItem = mErrors[e.Line];
+                            errorItem.Description += Environment.NewLine + Environment.NewLine + e.Description;
+                            if (errorItem.ErrorLevel < e.ErrorLevel)
+                                errorItem.ErrorLevel = e.ErrorLevel;
+                        }
+                        else
+                        {
+                            ErrorTagInfo errorItem = new ErrorTagInfo();
+                            errorItem.Description = e.Description;
+                            errorItem.ErrorLevel = e.ErrorLevel;
+                            errorItem.SpanData = new SnapshotSpan(mBuffer.CurrentSnapshot, line.Start, line.Length);
+
+                            mErrors[e.Line] = errorItem;
+                        }
                     }
                 }
             }
             catch { }
 
             if (TagsChanged != null)
-                TagsChanged(this, new SnapshotSpanEventArgs(new SnapshotSpan(mBuffer.CurrentSnapshot, new Span(0, mBuffer.CurrentSnapshot.Length))));
+                TagsChanged(this, new SnapshotSpanEventArgs(new SnapshotSpan(mBuffer.CurrentSnapshot, 0, mBuffer.CurrentSnapshot.Length)));
         }
 
         IEnumerable<ITagSpan<ErrorGlyphTag>> ITagger<ErrorGlyphTag>.GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            foreach (Tuple<SnapshotSpan, ErrorItem> errorEntry in mErrors)
+            foreach (ErrorTagInfo errorEntry in mErrors.Values)
             {
                 TagSpan<ErrorGlyphTag> tagSpan = null;
                 
                 try
                 {
-                    tagSpan = new TagSpan<ErrorGlyphTag>(errorEntry.Item1, new ErrorGlyphTag(errorEntry.Item2.Description, errorEntry.Item2.ErrorLevel));
+                    tagSpan = new TagSpan<ErrorGlyphTag>(errorEntry.SpanData, new ErrorGlyphTag(errorEntry.Description, errorEntry.ErrorLevel));
                 }
                 catch { }
 
