@@ -20,7 +20,9 @@ namespace FourWalledCubicle.MarginOfError
         public IMouseProcessor GetAssociatedMouseProcessor(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin)
         {
             ITagAggregator<ErrorGlyphTag> tagAggregator = aggregatorService.CreateTagAggregator<ErrorGlyphTag>(wpfTextViewHost.TextView.TextBuffer);
-            return new ErrorGlyphMouseProcessor(wpfTextViewHost, margin, tagAggregator, toolTipProviderFactory.GetToolTipProvider(wpfTextViewHost.TextView));
+            IToolTipProvider tooltipProvider = toolTipProviderFactory.GetToolTipProvider(wpfTextViewHost.TextView);
+
+            return new ErrorGlyphMouseProcessor(wpfTextViewHost, margin, tagAggregator, tooltipProvider);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
@@ -35,12 +36,12 @@ namespace FourWalledCubicle.MarginOfError
             ITextViewLine line = view.TextViewLines.GetTextViewLineContainingYCoordinate(mousePosition.Y);
             if (line != null)
             {
-                ErrorGlyphTag newTag = null;
+                IMappingTagSpan<ErrorGlyphTag> eSpan = mTagAggregator.GetTags(line.ExtentAsMappingSpan).FirstOrDefault();
 
-                foreach (IMappingTagSpan<ErrorGlyphTag> eSpan in mTagAggregator.GetTags(new SnapshotSpan(line.Start, line.End)))
-                    newTag = eSpan.Tag;
-
-                SetTooltip(newTag, view.TextSnapshot.CreateTrackingSpan(line.Start, line.Length, SpanTrackingMode.EdgeExclusive));
+                if (eSpan != null)
+                    SetTooltip(eSpan.Tag, view.TextSnapshot.CreateTrackingSpan(line.Start, line.Length, SpanTrackingMode.EdgeExclusive));
+                else
+                    SetTooltip(null, null);
             }
         }
 
