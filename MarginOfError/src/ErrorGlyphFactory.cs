@@ -18,12 +18,13 @@ namespace FourWalledCubicle.MarginOfError
 
         public UIElement GenerateGlyph(IWpfTextViewLine line, IGlyphTag tag)
         {
-            if (tag == null || !(tag is ErrorGlyphTag))
-                return null;
-
             ErrorGlyphTag errorDetails = tag as ErrorGlyphTag;
 
+            if (errorDetails == null)
+                return null;
+
             BitmapImage glyphImage = null;
+
             switch (errorDetails.ErrorLevel)
             {
                 case vsBuildErrorLevel.vsBuildErrorLevelHigh:
@@ -37,7 +38,7 @@ namespace FourWalledCubicle.MarginOfError
                     break;
             }
 
-            Image glyphIcon = new System.Windows.Controls.Image();
+            Image glyphIcon = new Image();
             glyphIcon.Width = 16;
             glyphIcon.Height = 16;
             glyphIcon.Source = glyphImage;
