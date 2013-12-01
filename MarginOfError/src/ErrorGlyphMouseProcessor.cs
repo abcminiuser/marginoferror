@@ -54,7 +54,7 @@ namespace FourWalledCubicle.MarginOfError
         {
             if (newTag != null)
             {
-                if (newTag != currentTag)
+                if ((currentTag == null) || (newTag.Description != currentTag.Description))
                 {
                     mToolTipProvider.ShowToolTip(trackingSpan, newTag.Description);
                     currentTag = newTag;
