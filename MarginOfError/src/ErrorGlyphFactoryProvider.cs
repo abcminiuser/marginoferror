@@ -8,7 +8,7 @@ namespace FourWalledCubicle.MarginOfError
     [Export(typeof(IGlyphFactoryProvider))]
     [Name("MarginOfErrorGlyphFactoryProvder")]
     [ContentType("code")]
-    [Order(After="VsTextMarker")]
+    [Order(Before="VsTextMarker")]
     [TagType(typeof(ErrorGlyphTag))]
     public sealed class ErrorGlyphFactoryProvider : IGlyphFactoryProvider
     {
