@@ -125,6 +125,8 @@
     <Compile Include="src\ErrorGlyphMouseProcessor.cs" />
     <Compile Include="src\ErrorGlyphMouseProcessorProvider.cs" />
     <Compile Include="src\ErrorGlyphTag.cs" />
+    <Compile Include="src\ErrorScrollMargin.cs" />
+    <Compile Include="src\ErrorScrollMarginFactory.cs" />
     <Compile Include="src\ErrorTagger.cs" />
     <Compile Include="src\ErrorTaggerProvider.cs" />
     <Compile Include="MarginOfErrorPackage.cs" />
