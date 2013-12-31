@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
 using System.Windows.Media;
-using Microsoft.VisualStudio.Text.Tagging;
-using System.Windows.Threading;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using EnvDTE80;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Utilities;
 
 namespace FourWalledCubicle.MarginOfError
 {
@@ -27,7 +28,7 @@ namespace FourWalledCubicle.MarginOfError
             _errorTagAggregator = factory.TagAggregatorFactoryService.CreateTagAggregator<ErrorGlyphTag>(textView);
 
             this.ClipToBounds = true;
-            this.Width = 4;
+            this.Width = 6;
             this.Background = Brushes.White;
 
             _textView.TextBuffer.ChangedLowPriority += (s, e) => { UpdateDisplay(); };
@@ -54,7 +55,7 @@ namespace FourWalledCubicle.MarginOfError
             {
                 var errorTags = _errorTagAggregator.GetTags(_textView.TextSnapshot.GetLineFromLineNumber(i).Extent);
 
-                EnvDTE80.vsBuildErrorLevel? maxErrorLevel = null;
+                vsBuildErrorLevel? maxErrorLevel = null;
                 string errorMessage = string.Empty;
 
                 foreach (var x in errorTags)
@@ -71,9 +72,9 @@ namespace FourWalledCubicle.MarginOfError
                     Rectangle errorRect = new Rectangle();
                     errorRect.Height = markHeight;
                     errorRect.Width = this.Width;
-                    errorRect.ToolTip = string.Format("Line {0}:\n{1}", i, errorMessage);
+                    errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", i, errorMessage);
 
-                    if (maxErrorLevel == EnvDTE80.vsBuildErrorLevel.vsBuildErrorLevelHigh)
+                    if (maxErrorLevel == vsBuildErrorLevel.vsBuildErrorLevelHigh)
                     {
                         errorRect.Stroke = Brushes.DarkRed;
                         errorRect.Fill = Brushes.Red;
