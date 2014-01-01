@@ -47,7 +47,9 @@ namespace FourWalledCubicle.MarginOfError
                 return;
 
             int totalLines = _textView.TextSnapshot.LineCount;
-            double markHeight = _textView.ViewportHeight / totalLines;
+            double relLineHeight = _textView.ViewportHeight / totalLines;
+            double markerHeight = Math.Max(relLineHeight, 10);
+            double currMarkerOffset = (relLineHeight - markerHeight) / 2;
 
             this.Children.Clear();
 
@@ -70,7 +72,7 @@ namespace FourWalledCubicle.MarginOfError
                 if (maxErrorLevel.HasValue)
                 {
                     Rectangle errorRect = new Rectangle();
-                    errorRect.Height = markHeight;
+                    errorRect.Height = markerHeight;
                     errorRect.Width = this.Width;
                     errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", i, errorMessage);
 
@@ -86,9 +88,11 @@ namespace FourWalledCubicle.MarginOfError
                     }
 
                     Canvas.SetLeft(errorRect, 0);
-                    Canvas.SetTop(errorRect, i * markHeight);
+                    Canvas.SetTop(errorRect, currMarkerOffset);
                     this.Children.Add(errorRect);
                 }
+
+                currMarkerOffset += relLineHeight;
             }
         }
 
