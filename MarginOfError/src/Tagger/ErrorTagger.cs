@@ -16,44 +16,44 @@ namespace FourWalledCubicle.MarginOfError
 
     internal sealed class ErrorTagger : ITagger<ErrorGlyphTag>
     {
-        private readonly DTE mDTE = null;
-        private readonly ITextBuffer mBuffer = null;
-        private readonly Dictionary<int, ErrorTagInfo> mErrors = new Dictionary<int, ErrorTagInfo>();
-        private readonly BuildEvents mBuildEvents = null;
+        private readonly DTE _DTE = null;
+        private readonly ITextBuffer _textBuffer = null;
+        private readonly Dictionary<int, ErrorTagInfo> _errors = new Dictionary<int, ErrorTagInfo>();
+        private readonly BuildEvents _buildEvents = null;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public ErrorTagger(DTE dte, ITextBuffer buffer)
         {
-            mDTE = dte;
-            mBuffer = buffer;
+            _DTE = dte;
+            _textBuffer = buffer;
 
-            mBuildEvents = dte.Events.BuildEvents;
-            mBuildEvents.OnBuildDone += (e, p) => UpdateErrorList();
+            _buildEvents = dte.Events.BuildEvents;
+            _buildEvents.OnBuildDone += (e, p) => UpdateErrorList();
 
             UpdateErrorList();
         }
 
         void UpdateErrorList()
         {
-            mErrors.Clear();
+            _errors.Clear();
 
-            ErrorItems errorList = (mDTE as EnvDTE80.DTE2).ToolWindows.ErrorList.ErrorItems;
+            ErrorItems errorList = (_DTE as EnvDTE80.DTE2).ToolWindows.ErrorList.ErrorItems;
 
             try
             {
-                ITextDocument textDocument = mBuffer.Properties[typeof(ITextDocument)] as ITextDocument;
+                ITextDocument textDocument = _textBuffer.Properties[typeof(ITextDocument)] as ITextDocument;
                 for (int i = 1; i <= errorList.Count; i++)
                 {
                     ErrorItem e = errorList.Item(i);
 
                     if (e.FileName.Equals(textDocument.FilePath))
                     {
-                        ITextSnapshotLine line = mBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
+                        ITextSnapshotLine line = _textBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
 
-                        if (mErrors.ContainsKey(e.Line))
+                        if (_errors.ContainsKey(e.Line))
                         {
-                            ErrorTagInfo errorItem = mErrors[e.Line];
+                            ErrorTagInfo errorItem = _errors[e.Line];
                             errorItem.Description += Environment.NewLine + Environment.NewLine + e.Description;
                             if (errorItem.ErrorLevel < e.ErrorLevel)
                                 errorItem.ErrorLevel = e.ErrorLevel;
@@ -63,9 +63,9 @@ namespace FourWalledCubicle.MarginOfError
                             ErrorTagInfo errorItem = new ErrorTagInfo();
                             errorItem.Description = e.Description;
                             errorItem.ErrorLevel = e.ErrorLevel;
-                            errorItem.SpanData = new SnapshotSpan(mBuffer.CurrentSnapshot, line.Start, line.Length);
+                            errorItem.SpanData = new SnapshotSpan(_textBuffer.CurrentSnapshot, line.Start, line.Length);
 
-                            mErrors[e.Line] = errorItem;
+                            _errors[e.Line] = errorItem;
                         }
                     }
                 }
@@ -73,12 +73,12 @@ namespace FourWalledCubicle.MarginOfError
             catch { }
 
             if (TagsChanged != null)
-                TagsChanged(this, new SnapshotSpanEventArgs(new SnapshotSpan(mBuffer.CurrentSnapshot, 0, mBuffer.CurrentSnapshot.Length)));
+                TagsChanged(this, new SnapshotSpanEventArgs(new SnapshotSpan(_textBuffer.CurrentSnapshot, 0, _textBuffer.CurrentSnapshot.Length)));
         }
 
         IEnumerable<ITagSpan<ErrorGlyphTag>> ITagger<ErrorGlyphTag>.GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            foreach (ErrorTagInfo errorEntry in mErrors.Values)
+            foreach (ErrorTagInfo errorEntry in _errors.Values)
             {
                 TagSpan<ErrorGlyphTag> tagSpan = null;
                 

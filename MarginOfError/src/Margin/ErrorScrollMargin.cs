@@ -30,7 +30,7 @@ namespace FourWalledCubicle.MarginOfError
 
             this.ClipToBounds = true;
             this.Width = 6;
-            this.Background = Brushes.White;
+            this.Background = Brushes.GhostWhite;
 
             _textView.TextBuffer.ChangedLowPriority += (s, e) => { UpdateDisplay(); };
             _textView.ViewportHeightChanged += (s, e) => { UpdateDisplay(); };

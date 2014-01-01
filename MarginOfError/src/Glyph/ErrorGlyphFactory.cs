@@ -10,11 +10,11 @@ namespace FourWalledCubicle.MarginOfError
 {
     internal sealed class ErrorGlyphFactory : IGlyphFactory
     {
-        private const string packURIPrefix = @"pack://application:,,,/MarginOfError;component/";
+        private const string PackURIPrefix = @"pack://application:,,,/MarginOfError;component/";
 
-        private readonly BitmapImage errorIcon = new BitmapImage(new Uri(packURIPrefix + "Resources/ErrorIcon.png"));
-        private readonly BitmapImage warningIcon = new BitmapImage(new Uri(packURIPrefix + "Resources/WarningIcon.png"));
-        private readonly BitmapImage infoIcon = new BitmapImage(new Uri(packURIPrefix + "Resources/InfoIcon.png"));
+        private readonly BitmapImage _errorIcon = new BitmapImage(new Uri(PackURIPrefix + "Resources/ErrorIcon.png"));
+        private readonly BitmapImage _warningIcon = new BitmapImage(new Uri(PackURIPrefix + "Resources/WarningIcon.png"));
+        private readonly BitmapImage _infoIcon = new BitmapImage(new Uri(PackURIPrefix + "Resources/InfoIcon.png"));
 
         public UIElement GenerateGlyph(IWpfTextViewLine line, IGlyphTag tag)
         {
@@ -28,13 +28,13 @@ namespace FourWalledCubicle.MarginOfError
             switch (errorDetails.ErrorLevel)
             {
                 case vsBuildErrorLevel.vsBuildErrorLevelHigh:
-                    glyphImage = errorIcon;
+                    glyphImage = _errorIcon;
                     break;
                 case vsBuildErrorLevel.vsBuildErrorLevelMedium:
-                    glyphImage = warningIcon;
+                    glyphImage = _warningIcon;
                     break;
                 case vsBuildErrorLevel.vsBuildErrorLevelLow:
-                    glyphImage = infoIcon;
+                    glyphImage = _infoIcon;
                     break;
             }
 
@@ -42,6 +42,7 @@ namespace FourWalledCubicle.MarginOfError
             glyphIcon.Width = 16;
             glyphIcon.Height = 16;
             glyphIcon.Source = glyphImage;
+
             return glyphIcon;
         }
     }

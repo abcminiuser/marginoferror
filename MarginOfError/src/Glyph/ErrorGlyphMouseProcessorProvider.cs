@@ -12,15 +12,15 @@ namespace FourWalledCubicle.MarginOfError
     public sealed class ErrorGlyphMouseProcessorProvider : IGlyphMouseProcessorProvider
     {
         [Import]
-        internal IBufferTagAggregatorFactoryService aggregatorService = null;
+        internal IBufferTagAggregatorFactoryService AggregatorService { get; set; }
 
         [Import]
-        internal IToolTipProviderFactory toolTipProviderFactory = null;
+        internal IToolTipProviderFactory ToolTipProviderFactory { get; set; }
 
         public IMouseProcessor GetAssociatedMouseProcessor(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin)
         {
-            ITagAggregator<ErrorGlyphTag> tagAggregator = aggregatorService.CreateTagAggregator<ErrorGlyphTag>(wpfTextViewHost.TextView.TextBuffer);
-            IToolTipProvider tooltipProvider = toolTipProviderFactory.GetToolTipProvider(wpfTextViewHost.TextView);
+            ITagAggregator<ErrorGlyphTag> tagAggregator = AggregatorService.CreateTagAggregator<ErrorGlyphTag>(wpfTextViewHost.TextView.TextBuffer);
+            IToolTipProvider tooltipProvider = ToolTipProviderFactory.GetToolTipProvider(wpfTextViewHost.TextView);
 
             return new ErrorGlyphMouseProcessor(wpfTextViewHost, margin, tagAggregator, tooltipProvider);
         }

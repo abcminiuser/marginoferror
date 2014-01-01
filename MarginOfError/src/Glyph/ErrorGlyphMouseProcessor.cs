@@ -11,32 +11,32 @@ namespace FourWalledCubicle.MarginOfError
 {
     internal sealed class ErrorGlyphMouseProcessor : MouseProcessorBase
     {
-        private readonly IWpfTextViewHost mTextViewHost;
-        private readonly IWpfTextViewMargin mTextViewMargin;
-        private readonly ITagAggregator<ErrorGlyphTag> mTagAggregator;
-        private readonly IToolTipProvider mToolTipProvider;
+        private readonly IWpfTextViewHost _textViewHost;
+        private readonly IWpfTextViewMargin _textViewMargin;
+        private readonly ITagAggregator<ErrorGlyphTag> _tagAggregator;
+        private readonly IToolTipProvider _toolTipProvider;
 
-        private ErrorGlyphTag currentTag = null;
+        private ErrorGlyphTag _currentTag = null;
 
         public ErrorGlyphMouseProcessor(IWpfTextViewHost textViewHost, IWpfTextViewMargin textViewMargin, ITagAggregator<ErrorGlyphTag> tagAggregator, IToolTipProvider toolTipProvider)
         {
-            mTextViewHost = textViewHost;
-            mTextViewMargin = textViewMargin;
-            mTagAggregator = tagAggregator;
-            mToolTipProvider = toolTipProvider;
+            _textViewHost = textViewHost;
+            _textViewMargin = textViewMargin;
+            _tagAggregator = tagAggregator;
+            _toolTipProvider = toolTipProvider;
         }
 
         public override void PostprocessMouseMove(MouseEventArgs e)
         {
-            ITextView view = mTextViewHost.TextView;
+            ITextView view = _textViewHost.TextView;
 
-            Point mousePosition = Mouse.GetPosition(mTextViewHost.TextView.VisualElement);
+            Point mousePosition = Mouse.GetPosition(_textViewHost.TextView.VisualElement);
             mousePosition.Offset(view.ViewportLeft, view.ViewportTop);
 
             ITextViewLine line = view.TextViewLines.GetTextViewLineContainingYCoordinate(mousePosition.Y);
             if (line != null)
             {
-                IMappingTagSpan<ErrorGlyphTag> eSpan = mTagAggregator.GetTags(line.ExtentAsMappingSpan).FirstOrDefault();
+                IMappingTagSpan<ErrorGlyphTag> eSpan = _tagAggregator.GetTags(line.ExtentAsMappingSpan).FirstOrDefault();
 
                 if (eSpan != null)
                     SetTooltip(eSpan.Tag, view.TextSnapshot.CreateTrackingSpan(line.Start, line.Length, SpanTrackingMode.EdgeExclusive));
@@ -54,16 +54,16 @@ namespace FourWalledCubicle.MarginOfError
         {
             if (newTag != null)
             {
-                if ((currentTag == null) || (newTag.Description != currentTag.Description))
+                if ((_currentTag == null) || (newTag.Description != _currentTag.Description))
                 {
-                    mToolTipProvider.ShowToolTip(trackingSpan, newTag.Description);
-                    currentTag = newTag;
+                    _toolTipProvider.ShowToolTip(trackingSpan, newTag.Description);
+                    _currentTag = newTag;
                 }
             }
-            else if (currentTag != null)
+            else if (_currentTag != null)
             {
-                mToolTipProvider.ClearToolTip();
-                currentTag = null;
+                _toolTipProvider.ClearToolTip();
+                _currentTag = null;
             }
         }
     }

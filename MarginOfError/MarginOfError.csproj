@@ -122,16 +122,16 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\ErrorGlyphMouseProcessor.cs" />
-    <Compile Include="src\ErrorGlyphMouseProcessorProvider.cs" />
-    <Compile Include="src\ErrorGlyphTag.cs" />
-    <Compile Include="src\ErrorScrollMargin.cs" />
-    <Compile Include="src\ErrorScrollMarginFactory.cs" />
-    <Compile Include="src\ErrorTagger.cs" />
-    <Compile Include="src\ErrorTaggerProvider.cs" />
+    <Compile Include="src\Glyph\ErrorGlyphMouseProcessor.cs" />
+    <Compile Include="src\Glyph\ErrorGlyphMouseProcessorProvider.cs" />
+    <Compile Include="src\Tagger\ErrorGlyphTag.cs" />
+    <Compile Include="src\Margin\ErrorScrollMargin.cs" />
+    <Compile Include="src\Margin\ErrorScrollMarginFactory.cs" />
+    <Compile Include="src\Tagger\ErrorTagger.cs" />
+    <Compile Include="src\Tagger\ErrorTaggerProvider.cs" />
     <Compile Include="MarginOfErrorPackage.cs" />
-    <Compile Include="src\ErrorGlyphFactory.cs" />
-    <Compile Include="src\ErrorGlyphFactoryProvider.cs" />
+    <Compile Include="src\Glyph\ErrorGlyphFactory.cs" />
+    <Compile Include="src\Glyph\ErrorGlyphFactoryProvider.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

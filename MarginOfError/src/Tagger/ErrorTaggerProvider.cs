@@ -14,7 +14,7 @@ namespace FourWalledCubicle.MarginOfError
     public sealed class ErrorTaggerProvider : ITaggerProvider
     {
         [Import]
-        internal SVsServiceProvider ServiceProvider = null;
+        internal SVsServiceProvider ServiceProvider { get; set; }
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
