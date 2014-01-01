@@ -15,7 +15,7 @@ namespace FourWalledCubicle.MarginOfError
     [Name(ErrorScrollMargin.MarginName)]
     class ErrorScrollMargin : Canvas, IWpfTextViewMargin
     {
-        public const string MarginName = "Error Scrollbar Overview";
+        public const string MarginName = "Document Error Overview";
 
         private readonly IWpfTextView _textView;
         private readonly ITagAggregator<ErrorGlyphTag> _errorTagAggregator;
@@ -49,8 +49,10 @@ namespace FourWalledCubicle.MarginOfError
 
             int totalLines = _textView.TextSnapshot.LineCount;
             int virtualAdditionalLines = (int)(_textView.ViewportHeight / _textView.LineHeight) - 1;
+
             double relLineHeight = _textView.ViewportHeight / (totalLines + virtualAdditionalLines);
             double markerHeight = Math.Max(relLineHeight, 10);
+
             double currMarkerOffset = (relLineHeight - markerHeight) / 2;
 
             this.Children.Clear();
@@ -105,7 +107,7 @@ namespace FourWalledCubicle.MarginOfError
             int currLineNumber = (int)(sender as FrameworkElement).Tag;
             var currLine = _textView.TextSnapshot.GetLineFromLineNumber(currLineNumber);
 
-            _textView.ViewScroller.EnsureSpanVisible(new SnapshotSpan(currLine.Start, 0), EnsureSpanVisibleOptions.AlwaysCenter);
+            _textView.ViewScroller.EnsureSpanVisible(currLine.Extent, EnsureSpanVisibleOptions.AlwaysCenter);
         }
 
         private void ThrowIfDisposed()
