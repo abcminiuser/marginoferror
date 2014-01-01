@@ -48,7 +48,8 @@ namespace FourWalledCubicle.MarginOfError
                 return;
 
             int totalLines = _textView.TextSnapshot.LineCount;
-            double relLineHeight = _textView.ViewportHeight / totalLines;
+            int virtualAdditionalLines = (int)(_textView.ViewportHeight / _textView.LineHeight) - 1;
+            double relLineHeight = _textView.ViewportHeight / (totalLines + virtualAdditionalLines);
             double markerHeight = Math.Max(relLineHeight, 10);
             double currMarkerOffset = (relLineHeight - markerHeight) / 2;
 
