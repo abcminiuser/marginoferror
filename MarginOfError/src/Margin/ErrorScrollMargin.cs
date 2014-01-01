@@ -62,12 +62,12 @@ namespace FourWalledCubicle.MarginOfError
                 vsBuildErrorLevel? maxErrorLevel = null;
                 string errorMessage = string.Empty;
 
-                foreach (var x in errorTags)
+                foreach (var currTag in errorTags)
                 {
-                    if (!maxErrorLevel.HasValue || (maxErrorLevel < x.Tag.ErrorLevel))
+                    if (!maxErrorLevel.HasValue || (maxErrorLevel < currTag.Tag.ErrorLevel))
                     {
-                        maxErrorLevel = x.Tag.ErrorLevel;
-                        errorMessage = x.Tag.Description;
+                        maxErrorLevel = currTag.Tag.ErrorLevel;
+                        errorMessage = currTag.Tag.Description;
                     }
                 }
 
