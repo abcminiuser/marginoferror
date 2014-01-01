@@ -8,6 +8,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Text;
 
 namespace FourWalledCubicle.MarginOfError
 {
@@ -75,6 +76,8 @@ namespace FourWalledCubicle.MarginOfError
                     errorRect.Height = markerHeight;
                     errorRect.Width = this.Width;
                     errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", i, errorMessage);
+                    errorRect.Tag = i;
+                    errorRect.MouseDown += errorRect_MouseDown;
 
                     if (maxErrorLevel == vsBuildErrorLevel.vsBuildErrorLevelHigh)
                     {
@@ -94,6 +97,13 @@ namespace FourWalledCubicle.MarginOfError
 
                 currMarkerOffset += relLineHeight;
             }
+        }
+
+        void errorRect_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var currLine = _textView.TextSnapshot.GetLineFromLineNumber((int)(sender as FrameworkElement).Tag);
+
+            _textView.ViewScroller.EnsureSpanVisible(new SnapshotSpan(currLine.Start, 0), EnsureSpanVisibleOptions.AlwaysCenter);
         }
 
         private void ThrowIfDisposed()
