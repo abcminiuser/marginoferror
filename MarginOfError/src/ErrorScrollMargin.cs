@@ -101,7 +101,8 @@ namespace FourWalledCubicle.MarginOfError
 
         void errorRect_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var currLine = _textView.TextSnapshot.GetLineFromLineNumber((int)(sender as FrameworkElement).Tag);
+            int currLineNumber = (int)(sender as FrameworkElement).Tag;
+            var currLine = _textView.TextSnapshot.GetLineFromLineNumber(currLineNumber);
 
             _textView.ViewScroller.EnsureSpanVisible(new SnapshotSpan(currLine.Start, 0), EnsureSpanVisibleOptions.AlwaysCenter);
         }
