@@ -55,9 +55,9 @@ namespace FourWalledCubicle.MarginOfError
 
             this.Children.Clear();
 
-            for (int i = 0; i < totalLines; i++)
+            foreach (var currLine in _textView.TextSnapshot.Lines)
             {
-                var errorTags = _errorTagAggregator.GetTags(_textView.TextSnapshot.GetLineFromLineNumber(i).Extent);
+                var errorTags = _errorTagAggregator.GetTags(currLine.Extent);
 
                 vsBuildErrorLevel? maxErrorLevel = null;
                 string errorMessage = string.Empty;
@@ -76,8 +76,8 @@ namespace FourWalledCubicle.MarginOfError
                     Rectangle errorRect = new Rectangle();
                     errorRect.Height = markerHeight;
                     errorRect.Width = this.Width;
-                    errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", i, errorMessage);
-                    errorRect.Tag = i;
+                    errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", (currLine.LineNumber + 1), errorMessage);
+                    errorRect.Tag = currLine.LineNumber;
                     errorRect.MouseDown += errorRect_MouseDown;
 
                     if (maxErrorLevel == vsBuildErrorLevel.vsBuildErrorLevelHigh)
