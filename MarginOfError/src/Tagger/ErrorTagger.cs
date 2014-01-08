@@ -19,9 +19,12 @@ namespace FourWalledCubicle.MarginOfError
     {
         private readonly DTE _DTE = null;
         private readonly ITextBuffer _textBuffer = null;
+        private readonly ITextDocument _textDocument = null;
         private readonly Dictionary<int, ErrorTagInfo> _errors = new Dictionary<int, ErrorTagInfo>();
+        private readonly BuildEvents _buildEvents = null;
         private readonly TaskListEvents _taskListEvents = null;
         private readonly Timer _updateTimer = null;
+        private readonly ErrorItems _errorList = null;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -29,32 +32,35 @@ namespace FourWalledCubicle.MarginOfError
         {
             _DTE = dte;
             _textBuffer = buffer;
+            _textDocument = _textBuffer.Properties[typeof(ITextDocument)] as ITextDocument;
+            _errorList = (_DTE as EnvDTE80.DTE2).ToolWindows.ErrorList.ErrorItems;
 
-            _updateTimer = new Timer(100);
+            _updateTimer = new Timer(500);
             _updateTimer.AutoReset = false;
             _updateTimer.Elapsed += (s, e) => UpdateErrorList();
             _updateTimer.Start();
 
-            _taskListEvents = dte.Events.TaskListEvents;
+            buffer.Changed += (i, j) => { _updateTimer.Stop(); _updateTimer.Start(); };
 
+            _taskListEvents = dte.Events.TaskListEvents;
             _taskListEvents.TaskAdded += (i) => { _updateTimer.Stop(); _updateTimer.Start(); };
             _taskListEvents.TaskRemoved += (i) => { _updateTimer.Stop(); _updateTimer.Start(); };
+
+            _buildEvents = dte.Events.BuildEvents;
+            _buildEvents.OnBuildDone += (e, p) => { _updateTimer.Stop(); _updateTimer.Start(); };        
         }
 
         void UpdateErrorList()
         {
             _errors.Clear();
 
-            ErrorItems errorList = (_DTE as EnvDTE80.DTE2).ToolWindows.ErrorList.ErrorItems;
-
             try
             {
-                ITextDocument textDocument = _textBuffer.Properties[typeof(ITextDocument)] as ITextDocument;
-                for (int i = 1; i <= errorList.Count; i++)
+                for (int i = 1; i <= _errorList.Count; i++)
                 {
-                    ErrorItem e = errorList.Item(i);
+                    ErrorItem e = _errorList.Item(i);
 
-                    if (e.FileName.Equals(textDocument.FilePath))
+                    if (e.FileName.Equals(_textDocument.FilePath))
                     {
                         ITextSnapshotLine line = _textBuffer.CurrentSnapshot.GetLineFromLineNumber(e.Line - 1);
 
