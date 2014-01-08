@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Text;
@@ -19,7 +20,8 @@ namespace FourWalledCubicle.MarginOfError
         private readonly DTE _DTE = null;
         private readonly ITextBuffer _textBuffer = null;
         private readonly Dictionary<int, ErrorTagInfo> _errors = new Dictionary<int, ErrorTagInfo>();
-        private readonly BuildEvents _buildEvents = null;
+        private readonly TaskListEvents _taskListEvents = null;
+        private readonly Timer _updateTimer = null;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -28,10 +30,15 @@ namespace FourWalledCubicle.MarginOfError
             _DTE = dte;
             _textBuffer = buffer;
 
-            _buildEvents = dte.Events.BuildEvents;
-            _buildEvents.OnBuildDone += (e, p) => UpdateErrorList();
+            _updateTimer = new Timer(100);
+            _updateTimer.AutoReset = false;
+            _updateTimer.Elapsed += (s, e) => UpdateErrorList();
+            _updateTimer.Start();
 
-            UpdateErrorList();
+            _taskListEvents = dte.Events.TaskListEvents;
+
+            _taskListEvents.TaskAdded += (i) => { _updateTimer.Stop(); _updateTimer.Start(); };
+            _taskListEvents.TaskRemoved += (i) => { _updateTimer.Stop(); _updateTimer.Start(); };
         }
 
         void UpdateErrorList()

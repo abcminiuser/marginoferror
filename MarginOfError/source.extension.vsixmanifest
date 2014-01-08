@@ -3,7 +3,7 @@
   <Identifier Id="d2d447c3-c682-4954-b6ae-899463dd1a63">
     <Name>MarginOfError</Name>
     <Author>FourWalledCubicle</Author>
-    <Version>0.3</Version>
+    <Version>0.4</Version>
     <Description xml:space="preserve">Show icons indicating lines with errors/warnings.</Description>
     <Locale>1033</Locale>
     <MoreInfoUrl>http://www.fourwalledcubicle.com</MoreInfoUrl>

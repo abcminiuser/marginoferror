@@ -61,28 +61,24 @@ namespace FourWalledCubicle.MarginOfError
             {
                 var errorTags = _errorTagAggregator.GetTags(currLine.Extent);
 
-                vsBuildErrorLevel? maxErrorLevel = null;
-                string errorMessage = string.Empty;
+                ErrorGlyphTag maxError = null;
 
                 foreach (var currTag in errorTags)
                 {
-                    if (!maxErrorLevel.HasValue || (maxErrorLevel < currTag.Tag.ErrorLevel))
-                    {
-                        maxErrorLevel = currTag.Tag.ErrorLevel;
-                        errorMessage = currTag.Tag.Description;
-                    }
+                    if ((maxError == null) || (maxError.ErrorLevel < currTag.Tag.ErrorLevel))
+                        maxError = currTag.Tag;
                 }
 
-                if (maxErrorLevel.HasValue)
+                if (maxError != null)
                 {
                     Rectangle errorRect = new Rectangle();
                     errorRect.Height = markerHeight;
                     errorRect.Width = this.Width;
-                    errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", (currLine.LineNumber + 1), errorMessage);
+                    errorRect.ToolTip = string.Format("Line {0}:\n\n{1}", (currLine.LineNumber + 1), maxError.Description);
                     errorRect.Tag = currLine.LineNumber;
                     errorRect.MouseDown += errorRect_MouseDown;
 
-                    if (maxErrorLevel == vsBuildErrorLevel.vsBuildErrorLevelHigh)
+                    if (maxError.ErrorLevel == vsBuildErrorLevel.vsBuildErrorLevelHigh)
                     {
                         errorRect.Stroke = Brushes.DarkRed;
                         errorRect.Fill = Brushes.Red;
